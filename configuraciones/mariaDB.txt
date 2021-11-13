@@ -1,6 +1,0 @@
--Entrar: sudo mysql;
--Crear privilegios: GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
--Actualizar privilegios:  FLUSH PRIVILEGES;
--Crear bases: CREATE SCHEMA sqlejemplo;
--Mostrar bases: showdatabases;
-En caso de NO tener acceso
