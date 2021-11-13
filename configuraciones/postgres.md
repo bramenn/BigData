@@ -8,4 +8,4 @@ Crar bd: CREATE DATABASE repoejemplo ENCODING 'UTF8' LC_COLLATE='C' LC_CTYPE='C'
 Dar privilegios sobre una sola bd: GRANT ALL PRIVILEGES ON DATABASE repoejemplo to bigdata;
 
 Para ingresar a la bd con el usuario previamente creado:
-psql -d repoejemplo -U bigdataq
+psql -d repoejemplo -U bigdata
