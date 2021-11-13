@@ -1,5 +1,0 @@
-para conectarme:
-ssh -i prueba1.pem ubuntu@ec2-54-232-25-42.sa-east-1.compute.amazonaws.com
-
-para subir documentos al servidor:
-scp -i prueba1.pem <PATH> ubuntu@ec2-54-232-25-42.sa-east-1.compute.amazonaws.com:documentos/
