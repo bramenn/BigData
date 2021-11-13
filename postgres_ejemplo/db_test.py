@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-conn = create_engine("postgres://bigdata:bigdata@localhost/repoejemplo")
+conn = create_engine("postgresql://bigdata:bigdata@localhost/repoejemplo")
 
 Session = sessionmaker(bind=conn)
 
