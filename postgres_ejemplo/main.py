@@ -60,6 +60,8 @@ if __name__ == '__main__':
     # insert_user(description="Informacion de prueba", state=1, age=22)
 
 
+
+
     # Mostrar un usuario
     # select_first_user()
 

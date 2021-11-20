@@ -9,4 +9,4 @@ pip install -r requirements.txt
 
 Bye !!
 
-(∩｀-´)⊃━☆ﾟ.*･｡ﾟ
+# (∩｀-´)⊃━☆ﾟ.*･｡ﾟ

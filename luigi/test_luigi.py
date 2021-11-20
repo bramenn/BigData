@@ -1,6 +1,7 @@
 import luigi
 
 # python3 -m luigi --module test_luigi Cuadrados --n 15 --local-scheduler
+# python3 test_luigi.py Cuadrados --local-scheduler --n 30
 class SalidaNumeros(luigi.Task):
     """Creamos un archivo y le asiganos numeros del 1 al 11"""
     n = luigi.IntParameter()
