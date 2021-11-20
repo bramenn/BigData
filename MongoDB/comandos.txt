@@ -1,0 +1,28 @@
+sudo service mongod restart
+sudo service mongod start
+sudo service mongod stop
+sudo service mongod status
+
+ver bds:
+how databases;
+
+ver collections:
+sow collections
+
+nueva bd:
+db.createCollection('usuarios')
+
+insertar:
+db.usuarios.insert({nombre:"alejandro", tipo:"nacional"})
+
+consultar global:
+db.usuarios.find()
+
+consultar y filtro:
+db.usuario.find({nombre:'alejandro', tipo:"nacional"})
+
+consultar 1:
+db.usuario.findOne()
+
+actualizar:
+db.usuario.update({nombre:'alejandro'}, {$set:{municipio:'Pereira'}}}
