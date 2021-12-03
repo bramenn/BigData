@@ -4,12 +4,15 @@ sudo service mongod stop
 sudo service mongod status
 
 ver bds:
-how databases;
+show databases;
 
 ver collections:
-sow collections
+show collections;
 
-nueva bd:
+Crear bd:
+use db
+
+nueva Collection:
 db.createCollection('usuarios')
 
 insertar:
@@ -24,5 +27,63 @@ db.usuario.find({nombre:'alejandro', tipo:"nacional"})
 consultar 1:
 db.usuario.findOne()
 
-actualizar:
+consultar elementos no repetidos:
+db.usuario.distinct('nombre')
+
+db.Cacao.distinct('MUNICIPIO',{'DEPARTAMENTO':'RISARALDA'})
+
+db.Cacao.find({DEPARTAMENTO:'ANTIOQUIA'}).count()
+
+Busca todas las Ana:
+db.empleados.find({nombre:/Ana/})
+
+Buscar por expresion regular:
+db.empleados.find({nombre:{$regex:'^Ana$'}})
+
+db.Cacao.find({DEPARTAMENTO:'ANTIOQUIA'}).limit(1)
+
+db.Cacao.find({DEPARTAMENTO:'CAUCA'}, {MUNICIPIO:1, PERIODO:1, AreaSembrada:1})
+db.Cacao.find({$or: [{DEPARTAMENTO:'CAUCA'}, {DEPARTAMENTO: 'PASTO'}]})
+
+filtro por comparacion:
+
+lt
+lte
+gt
+gte
+ne
+db.Cacao.find({AreaSembrada:{$lt:500}}).count()
+db.Cacao.find({AreaSembrada:{$lt:500}}).sort({MUNICIPIO:1/-1})
+db.Cacao.find({AreaSembrada:{$lt:500}, DEPARTAMENTO: 'CAUCA'}).count()
+
+actualizar solo uno:
 db.usuario.update({nombre:'alejandro'}, {$set:{municipio:'Pereira'}}}
+
+actualizar muchos:
+db.empleados.updateMany({nombre:/Luis/}, {$set:{genero:'M'}})
+
+## cosas con csv
+mongoimport --db cultivos --collection Cacao --type=csv --file prod_cacao_dpt.csv --headerline
+
+mongoexport --db cultivos --collection Antioquia --type=csv --fields _id,value --out infoAntioquia.csv
+## Usar un archivo .js
+mongo < empleado.js
+
+empleado.js que tene las consultas (querys)
+
+## agregación:
+db.Cacao.aggregate([{$match:{DEPARTAMENTO:'RISARALDA'}}, {$group:{_id:null, promedio:{$avg: '$AreaSembrada'}}}])
+
+## funciones js ## se pueden aramar dentro de mongo
+var map = function(){
+    emit(this.DEPARTAMENTO,1);
+    }
+var reduce=function(llave,valor){
+    return Array.sum(valor);
+    }
+use Cultivos
+db.Cacao.mapReduce(map, reduce, {out:'conteo'})
+db.conteo.find()
+
+--------------
+

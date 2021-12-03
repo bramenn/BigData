@@ -7,11 +7,18 @@ from modelo import *
 DEPARTAMENTOS = []
 MUNICIPIOS = []
 
+query = []
+limit_data_query = 100
 
 def insert_data(data):
     """Inserta una fila"""
     db.session.add(data)
     db.session.commit()
+
+def insert_data_block():
+    if query:
+        db.session.bulk_save_objects(query)
+        db.session.commit()
 
 def serach_departamento_id(departamento):
     dept = db.session.query(Departamento).where(Departamento.departamento==departamento).first()
@@ -49,56 +56,66 @@ if __name__ == "__main__":
     db.Base.metadata.create_all(db.conn)
     arg = sys.argv
 
-    if len(arg) == 3:
-        file_name = arg[1]
-        element_len = arg[2]
+    # if len(arg) == 3:
+    file_name = arg[1]
+    # element_len = arg[2] if arg[2] else True
 
-        file = open(file_name, mode="r")
-        list_data = {}
-        limit_data = int(element_len)
-        counter = 0
-        ignorar = True
-        for line in file:
-            line = line.strip()
-            fields = line.split(",")
-            if ignorar:
-                ignorar = False
-            else:
-                # Obrenemos la infromacion
-                departamento = fields[0]
-                municipio = fields[1]
-                codigodane = fields[2]
-                clasebien = fields[3]
-                fecha = fields[4]
+    file = open(file_name, mode="r")
+    list_data = {}
+    # limit_data = int(element_len)
+    counter = 0
+    ignorar = True
+    for line in file:
+        line = line.strip()
+        fields = line.split(",")
+        if ignorar:
+            ignorar = False
+        else:
+            # Obrenemos la infromacion
+            departamento = fields[0]
+            municipio = fields[1]
+            codigodane = fields[2]
+            clasebien = fields[3]
+            fecha = fields[4]
+            try:
                 cantidad = float(fields[5])
+            except ValueError:
+                print(f"ERROR EN: {departamento} \t {municipio} \t {codigodane} \n {clasebien} \t {fecha} \t {cantidad}")
+            print(f"{departamento} \t {municipio} \t {codigodane} \n {clasebien} \t {fecha} \t {cantidad}")
 
-                if not departamento in DEPARTAMENTOS:
-                    DEPARTAMENTOS.append(departamento)
-                    dept_model = departamento_model(departamento)
-                    insert_data(dept_model)
-
-
-                if not municipio in MUNICIPIOS:
-                    MUNICIPIOS.append(municipio)
-                    id_dept = serach_departamento_id(departamento)
-                    if id_dept:
-                        muni_model = municipio_model(codigodane, municipio, id_dept)
-                        insert_data(muni_model)
-                    else:
-                        print(f"No se inserto el registro municipio, no se encontro {departamento}")
+            if not departamento in DEPARTAMENTOS:
+                DEPARTAMENTOS.append(departamento)
+                dept_model = departamento_model(departamento)
+                insert_data(dept_model)
 
 
-                id_muni = serach_municipio_id(municipio)
-                if id_muni:
-                    inca_model = incautacion_model(id_muni, clasebien, fecha, cantidad)
-                    insert_data(inca_model)
+            if not municipio in MUNICIPIOS:
+                MUNICIPIOS.append(municipio)
+                id_dept = serach_departamento_id(departamento)
+                if id_dept:
+                    muni_model = municipio_model(codigodane, municipio, id_dept)
+                    insert_data(muni_model)
                 else:
-                    print(f"No se inserto el registro incautacion, no se encontro {municipio}")
+                    print(f"No se inserto el registro municipio, no se encontro {departamento}")
 
-            if counter >= limit_data:
-                break
 
-            counter += 1
+            id_muni = serach_municipio_id(municipio)
+            if id_muni:
+                inca_model = incautacion_model(id_muni, clasebien, fecha, cantidad)
+                query.append(inca_model)
+                if counter == limit_data_query:
+                    insert_data_block()
+                    query = []
+                    counter = 0
+                # insert_data(inca_model)
+                counter += 1
+            else:
+                print(f"No se inserto el registro incautacion, no se encontro {municipio}")
+
+        # if counter >= limit_data:
+        #     break
+
+        # counter += 1
 
     else:
         print("### Argumentos incorrectos")
