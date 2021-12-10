@@ -1,32 +1,46 @@
-from pymongo.message import query
+from fastapi import FastAPI
 import db
 from modelos import *
-from ordenamiento_de_info import main
 
-query_dept = []
+app = FastAPI()
 
 
-def departamento_model(departamento):
-    dept = Departamento(
-        id_dept=departamento.id_dept
-        departamento_name=departamento.id_dept
-        prom_puntaje_area_urbano=departamento.id_dept
-        prom_puntaje_area_rural=departamento.id_dept
-        prom_puntaje_global=departamento.id_dept
+@app.get("/puntaje_globla_dep/{departamento}")
+def read_root(departamento: str):
+    departamento_dict = obtener_departamento_por_nombre(departamento)
+    return departamento_dict
+
+@app.get("/obtener_departamentos")
+def read_root():
+    departamentos_dict = obtener_departamentos()
+    return departamentos_dict
+
+def obtener_departamentos():
+    departamentos_db =db.session.query(Departamento).all()
+    deptos_dic = {}
+    for departamento in departamentos_db:
+        deptos_dic[departamento.id_dept] = {
+        "departamento_name": departamento.departamento_name,
+        "prom_puntaje_area_urbano": departamento.prom_puntaje_area_urbano,
+        "prom_puntaje_area_rural": departamento.prom_puntaje_area_rural,
+        "prom_puntaje_global": departamento.prom_puntaje_global,
+    }
+
+    return deptos_dic
+def obtener_departamento_por_nombre(departamento: str):
+
+    depto = (
+        db.session.query(Departamento)
+        .where(Departamento.departamento_name == departamento)
+        .first()
     )
-    return dept
 
-if __name__ == '__main__':
-    db.Base.metadata.create_all(db.conn)
+    departamento_db = {
+        "id_dept": depto.id_dept,
+        "departamento_name": depto.departamento_name,
+        "prom_puntaje_area_urbano": depto.prom_puntaje_area_urbano,
+        "prom_puntaje_area_rural": depto.prom_puntaje_area_rural,
+        "prom_puntaje_global": depto.prom_puntaje_global,
+    }
 
-    DEPARTAMENTOS, COLEGIOS, ESTUDIANTES = main()
-
-    contador_dept = 0
-    contador_cole = 0
-    contador_estut = 0
-
-    for departamento in DEPARTAMENTOS:
-        if contador_dept <= 100:
-
-
-
+    return departamento_db

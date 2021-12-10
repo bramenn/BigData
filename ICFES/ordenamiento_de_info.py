@@ -12,12 +12,10 @@ COLEGIOS = {}
 ESTUDIANTES = {}
 
 
-
-
 class Departamento:
+    """Clase referente a un departamento"""
     id_dept: str
     departamento_name: str
-
 
     def __init__(
         self,
@@ -35,25 +33,41 @@ class Departamento:
         self.lista_puntajes_rurales = []
 
     def procesar_promedio_urbano(self) -> None:
-
+        """Este metodo toma la lista de puntajes urbanos y calcula el promedio en esta area"""
         puntajes_urbano_sum = sum(self.lista_puntajes_urbanos)
+        print(
+            f"Obteniendo de la sumatoria de los puntajes urbanos ... ",
+            f"la sumatoria de {self.departamento_name} es {puntajes_urbano_sum} de "
+            "{len(self.lista_puntajes_urbanos)} puntajes"
+        )
         if self.lista_puntajes_urbanos:
+            print("Obteniendo el promedio urbano ...")
             promedio_urbano = puntajes_urbano_sum / len(self.lista_puntajes_urbanos)
             self.prom_puntaje_area_urbano = promedio_urbano
         else:
             self.prom_puntaje_area_urbano = 0
+        print(f"El promedio urbano de {self.departamento_name} es {self.prom_puntaje_area_urbano}")
 
     def procesar_promedio_rural(self) -> None:
-
+        """Este metodo toma la lista de puntajes rurales y calcula el promedio en esta area"""
         puntajes_rural_sum = sum(self.lista_puntajes_rurales)
+        print(
+            f"Obteniendo de la sumatoria de los puntajes rurales ... ",
+            f"la sumatoria de {self.departamento_name} es {puntajes_rural_sum} de "
+            "{len(self.lista_puntajes_urbanos)} puntajes"
+        )
         if self.lista_puntajes_rurales:
+            print("Obteniendo el promedio rural ...")
             promedio_rural = puntajes_rural_sum / len(self.lista_puntajes_rurales)
             self.prom_puntaje_area_rural = promedio_rural
         else:
             self.prom_puntaje_area_rural = 0
+        print(f"El promedio rural de {self.departamento_name} es {self.prom_puntaje_area_rural}")
 
     def procesar_promedio_global(self) -> None:
+        print("Sacando el promedio urbano ...")
         self.procesar_promedio_urbano()
+        print("Sacando el promedio rural ...")
         self.procesar_promedio_rural()
 
         len_puntajes = len(self.lista_puntajes_urbanos) + len(self.lista_puntajes_rurales)
@@ -64,8 +78,14 @@ class Departamento:
         else:
             self.prom_puntaje_global = 0
 
+        print(
+            f"El promedio global de {self.departamento_name} es {self.prom_puntaje_global} de "
+            f"{len_puntajes} puntajes."
+        )
+
 
 class Colegio:
+    """Clase referente a un colegio"""
     id_colegio: str
     id_dept: str
     nombre_muni_cole: str
@@ -90,28 +110,24 @@ class Colegio:
 
 
 class Estudiante:
+    """Clase referente a un estudiante"""
     id_estut: str
     genero_estut: str
     puntaje_estunt: int
     id_cole: str
 
-    def __init__(
-        self,
-        id_estut: str,
-        genero_estut: str,
-        puntaje_estunt: int,
-        id_cole: str
-    ):
+    def __init__(self, id_estut: str, genero_estut: str, puntaje_estunt: int, id_cole: str):
         self.id_estut = id_estut
         self.genero_estut = genero_estut
         self.puntaje_estunt = puntaje_estunt
         self.id_cole = id_cole
 
 
-def registar_estut(id_estut: str, genero_estut: str, puntaje_estunt: int, id_cole:str):
-
+def registar_estut(id_estut: str, genero_estut: str, puntaje_estunt: int, id_cole: str):
+    """Esta funcion registra un estudiante en el dict ESTUDIANTES"""
     global ESTUDIANTES
 
+    print(f"Verificando si el estudiante {id_estut} ya existe ...")
     if not id_estut in ESTUDIANTES:
         estudiante = Estudiante(id_estut, genero_estut, puntaje_estunt, id_cole)
         ESTUDIANTES[id_estut] = estudiante
@@ -128,8 +144,11 @@ def registar_cole(
     naturaleza_cole: str,
     area_ubicacion_cole: str,
 ):
+    """Esta funcion registra un estudiante en el dict ESTUDIANTES"""
+
     global COLEGIOS
 
+    print(f"Verificando si el colegio {id_colegio} ya existe ...")
     if not id_colegio in COLEGIOS:
         colegio = Colegio(
             id_colegio,
@@ -146,7 +165,11 @@ def registar_cole(
 
 
 def registar_dep(id_dept: str, departamento_name: str):
+    """Esta funcion registra un departamento en el dict DEPARTAMENTOS"""
+
     global DEPARTAMENTOS
+
+    print(f"Verificando si el departamento {id_dept} ya existe ...")
     if not id_dept in DEPARTAMENTOS:
         depto = Departamento(id_dept, departamento_name)
         DEPARTAMENTOS[id_dept] = depto
@@ -156,11 +179,15 @@ def registar_dep(id_dept: str, departamento_name: str):
 
 
 def main() -> Tuple:
+    """Funcion principal"""
+
+    print("Trayendo todos los registros guardados en la bd icfes en la coleccion icfes_regs de mongodb")
     resgistros_icfes = db.icfes_regs.find()
     contador = 0
     for resgistro_icfes in resgistros_icfes:
 
-        # obtenemos la infromación
+        # obtenemos la infromación necesaría
+
         id_depto = resgistro_icfes.get("COLE_COD_DEPTO_UBICACION")
         nombre_depto = resgistro_icfes.get("COLE_DEPTO_UBICACION")
 
@@ -173,19 +200,9 @@ def main() -> Tuple:
         id_estut = resgistro_icfes.get("ESTU_CONSECUTIVO")
         genero_estut = resgistro_icfes.get("ESTU_GENERO")
         puntaje_estunt = resgistro_icfes.get("PUNT_GLOBAL")
-        print(
-            "----------------------------------------------------------------------------------",
-            "----------------------------------------------------------------------------------------",
-        )
-        print(
-            f"{contador} - {id_depto}\t{nombre_depto}\t{id_cole}\t{nombre_cole}",
-            f"\t{nombre_muni_cole}\t{naturaleza_cole}\t{area_ubicacion_cole}\t{id_estut}",
-            f"\t{genero_estut}\t{puntaje_estunt}",
-        )
-        print(
-            "----------------------------------------------------------------------------------",
-            "----------------------------------------------------------------------------------------",
-        )
+
+        # registramos los datos en los diccionarios
+
         registar_dep(id_dept=id_depto, departamento_name=nombre_depto)
 
         if area_ubicacion_cole == "URBANO":
@@ -203,23 +220,16 @@ def main() -> Tuple:
             naturaleza_cole=naturaleza_cole,
             area_ubicacion_cole=area_ubicacion_cole,
         )
-        registar_estut(id_estut=id_estut, genero_estut=genero_estut, puntaje_estunt=puntaje_estunt, id_cole=id_cole)
+        registar_estut(
+            id_estut=id_estut,
+            genero_estut=genero_estut,
+            puntaje_estunt=puntaje_estunt,
+            id_cole=id_cole,
+        )
 
         contador += 1
 
-
     print("\n\n################################")
-    for depto_ in DEPARTAMENTOS:
-        depto_ = DEPARTAMENTOS[depto_]
-        depto_.procesar_promedio_global()
-        print("---------------------------------Departamento de prueba-----------------------------------")
-        print(
-            f"Nombre depto: {depto_.departamento_name}\t ||",
-            f"Puntaje global: {depto_.prom_puntaje_global}\t ||",
-            f"Puntaje rural: {depto_.prom_puntaje_area_rural}\t ||",
-            f"Puntaje urbano: {depto_.prom_puntaje_area_urbano}",
-        )
-    print("------------------------------------------------------------------------------------------")
     print(f"Numero de registros procesados {contador}")
     print(f"Numero de departamentos guardados {len(DEPARTAMENTOS)}")
     print(f"Numero de colegios guardados {len(COLEGIOS)}")
@@ -227,3 +237,4 @@ def main() -> Tuple:
     print("################################")
 
     return (DEPARTAMENTOS, COLEGIOS, ESTUDIANTES)
+    
