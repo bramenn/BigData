@@ -182,7 +182,7 @@ def main() -> Tuple:
     """Funcion principal"""
 
     print("Trayendo todos los registros guardados en la bd icfes en la coleccion icfes_regs de mongodb")
-    resgistros_icfes = db.icfes_regs.find()
+    resgistros_icfes = db.icfes_regs.find({"COLE_CALENDARIO":"B"})
     contador = 0
     for resgistro_icfes in resgistros_icfes:
 
@@ -230,6 +230,17 @@ def main() -> Tuple:
         contador += 1
 
     print("\n\n################################")
+    for depto_ in DEPARTAMENTOS:
+        depto_ = DEPARTAMENTOS[depto_]
+        depto_.procesar_promedio_global()
+    print("---------------------------------Departamento de prueba-----------------------------------")
+    print(
+        f"Nombre depto: {depto_.departamento_name}\t ||",
+        f"Puntaje global: {depto_.prom_puntaje_global}\t ||",
+        f"Puntaje rural: {depto_.prom_puntaje_area_rural}\t ||",
+        f"Puntaje urbano: {depto_.prom_puntaje_area_urbano}",
+    )
+    print("------------------------------------------------------------------------------------------")
     print(f"Numero de registros procesados {contador}")
     print(f"Numero de departamentos guardados {len(DEPARTAMENTOS)}")
     print(f"Numero de colegios guardados {len(COLEGIOS)}")
@@ -237,4 +248,3 @@ def main() -> Tuple:
     print("################################")
 
     return (DEPARTAMENTOS, COLEGIOS, ESTUDIANTES)
-    
